@@ -4,7 +4,9 @@ import os
 import streamlit as st
 
 from streamlit_option_menu import option_menu
-from gemini_utility import (load_gemini_pro_model, gemini_pro_vision_response, embedding_model_response,
+from gemini_utility import (load_gemini_pro_model, 
+                            gemini_pro_vision_response, 
+                            embedding_model_response,
                             gemini_pro_response)
 from PIL import Image
 
