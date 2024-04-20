@@ -15,7 +15,7 @@ This repository implements a chatbot application using Streamlit and Google's Ge
 
 1. Python 3.x (https://www.python.org/downloads/)
 2. Streamlit (https://streamlit.io/)
-3. Google Generative AI API Key ([invalid URL removed])
+3. Google Generative AI API Key 
 
 ### Installation:
 
