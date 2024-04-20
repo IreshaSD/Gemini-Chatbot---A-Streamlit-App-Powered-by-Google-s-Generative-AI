@@ -1,3 +1,9 @@
+# Gemini Chatbot - A Streamlit App Powered by Google's Generative AI
+
+### Description:
+
+This repository implements a chatbot application using Streamlit and Google's Generative AI (GenAI) service. The chatbot leverages the powerful gemini-pro model for text generation, enabling you to interact with it in a conversational manner.
+
 ### Key Features:
 
 1. Chat Interface: Engage in interactive conversations with the gemini-pro model through Streamlit's intuitive chat interface.
