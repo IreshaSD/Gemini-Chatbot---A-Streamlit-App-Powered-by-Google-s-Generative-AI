@@ -151,6 +151,16 @@ if selected == "Embed text":
 
 # Question answering page
 if selected == "Ask me anything":
-    st.title("❓ Ask me a question
+    st.title("❓ Ask me a question")
+
+    user_prompt = st.text_area(label='', placeholder="Ask me anything...")
+
+    if st.button("Get Response"):
+        if user_prompt.strip() == "":
+            st.error("No question entered. Please ask a question to get a response.")
+        else:
+            response = gemini_pro_response(user_prompt)
+            st.markdown(response)
+
 
 
