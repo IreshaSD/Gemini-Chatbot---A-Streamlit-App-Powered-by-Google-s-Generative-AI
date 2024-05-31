@@ -45,10 +45,14 @@ if "response_count" not in st.session_state:
 if "responses" not in st.session_state:
     st.session_state.responses = []
 
+if "initial_response_received" not in st.session_state:
+    st.session_state.initial_response_received = False
+
 # Function to reset the response count
 def reset_response_count():
     st.session_state.response_count = 0
     st.session_state.responses = []
+    st.session_state.initial_response_received = False
 
 # Chatbot page
 if selected == 'ChatBot':
@@ -124,25 +128,33 @@ if selected == "Ask me anything":
         else:
             response = gemini_pro_response(user_prompt)
             st.session_state.responses.append(response)
-            st.session_state.response_count += 1
+            st.session_state.response_count = len(st.session_state.responses) - 1
+            st.session_state.initial_response_received = True
 
-    if st.session_state.response_count == 0:
+    if not st.session_state.initial_response_received:
         if st.button("Get Response"):
             get_response()
     
-    if 0 < st.session_state.response_count <= 3:
-        st.markdown(st.session_state.responses[-1])
-        if st.session_state.response_count < 3:
+    if st.session_state.initial_response_received:
+        st.markdown(st.session_state.responses[st.session_state.response_count])
+
+        if st.session_state.response_count < 2:
             if st.button("Get Another Response"):
                 get_response()
-        if st.session_state.response_count > 1:
+
+        if st.session_state.response_count > 0:
             if st.button("Go to Previous Response"):
-                st.session_state.response_count -= 1
-                st.markdown(st.session_state.responses[st.session_state.response_count - 1])
-        if st.session_state.response_count < 3 and st.session_state.response_count > 1:
+                if st.session_state.response_count > 0:
+                    st.session_state.response_count -= 1
+                    st.markdown(st.session_state.responses[st.session_state.response_count])
+
+        if st.session_state.response_count < len(st.session_state.responses) - 1:
             if st.button("Go to Next Response"):
-                st.session_state.response_count += 1
-                st.markdown(st.session_state.responses[st.session_state.response_count - 1])
+                if st.session_state.response_count < len(st.session_state.responses) - 1:
+                    st.session_state.response_count += 1
+                    st.markdown(st.session_state.responses[st.session_state.response_count])
+
+
 
 
 
