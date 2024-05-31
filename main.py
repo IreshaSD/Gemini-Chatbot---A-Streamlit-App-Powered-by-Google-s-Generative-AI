@@ -67,29 +67,32 @@ if selected == 'ChatBot':
             st.markdown(gemini_response.text)
 
 
-# Image captioning page
+# Image Captioning page
 if selected == "Image Captioning":
-
+    # Streamlit page title
     st.title("📷 Snap Narrate")
 
     uploaded_image = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
 
     if st.button("Generate Caption"):
-        image = Image.open(uploaded_image)
+        if uploaded_image is not None:
+            image = Image.open(uploaded_image)
+            col1, col2 = st.columns(2)
 
-        col1, col2 = st.columns(2)
+            with col1:
+                resized_image = image.resize((800, 500))
+                st.image(resized_image)
 
-        with col1:
-            resized_img = image.resize((800, 500))
-            st.image(resized_img)
+            default_prompt = "Write a short caption for this image"  # change this prompt as per your requirement
 
-        default_prompt = "write a short caption for this image"  # change this prompt as per your requirement
+            # Get the caption of the image from the gemini-pro-vision model
+            caption = gemini_pro_vision_response(default_prompt, image)
 
-        # get the caption of the image from the gemini-pro-vision LLM
-        caption = gemini_pro_vision_response(default_prompt, image)
+            with col2:
+                st.info(caption)
+        else:
+            st.error("No image detected. Please upload an image for captioning and try again.")
 
-        with col2:
-            st.info(caption)
 
 
 # text embedding model
