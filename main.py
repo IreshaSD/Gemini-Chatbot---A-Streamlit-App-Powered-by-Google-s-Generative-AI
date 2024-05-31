@@ -38,21 +38,21 @@ def translate_role_for_streamlit(user_role):
 if "chat_session" not in st.session_state:
     st.session_state.chat_session = None
 
-# Initialize response tracker for "Ask me anything" if not already present
-if "response_count" not in st.session_state:
-    st.session_state.response_count = 0
+# Initialize response tracker for "ChatBot" if not already present
+if "chat_response_count" not in st.session_state:
+    st.session_state.chat_response_count = 0
 
-if "responses" not in st.session_state:
-    st.session_state.responses = []
+if "chat_responses" not in st.session_state:
+    st.session_state.chat_responses = []
 
-if "initial_response_received" not in st.session_state:
-    st.session_state.initial_response_received = False
+if "chat_initial_response_received" not in st.session_state:
+    st.session_state.chat_initial_response_received = False
 
-# Function to reset the response count
-def reset_response_count():
-    st.session_state.response_count = 0
-    st.session_state.responses = []
-    st.session_state.initial_response_received = False
+# Function to reset the response count for ChatBot
+def reset_chat_response_count():
+    st.session_state.chat_response_count = 0
+    st.session_state.chat_responses = []
+    st.session_state.chat_initial_response_received = False
 
 # Chatbot page
 if selected == 'ChatBot':
@@ -71,8 +71,30 @@ if selected == 'ChatBot':
     if user_prompt:
         st.chat_message("user").markdown(user_prompt)
         gemini_response = st.session_state.chat_session.send_message(user_prompt)
-        with st.chat_message("assistant"):
-            st.markdown(gemini_response.text)
+        st.session_state.chat_responses.append(gemini_response.text)
+        st.session_state.chat_response_count = len(st.session_state.chat_responses) - 1
+        st.session_state.chat_initial_response_received = True
+
+    if st.session_state.chat_initial_response_received:
+        st.markdown(st.session_state.chat_responses[st.session_state.chat_response_count])
+
+        if st.session_state.chat_response_count < 2:
+            if st.button("Get Another Response"):
+                gemini_response = st.session_state.chat_session.send_message(user_prompt)
+                st.session_state.chat_responses.append(gemini_response.text)
+                st.session_state.chat_response_count = len(st.session_state.chat_responses) - 1
+
+        if st.session_state.chat_response_count > 0:
+            if st.button("Go to Previous Response"):
+                if st.session_state.chat_response_count > 0:
+                    st.session_state.chat_response_count -= 1
+                    st.markdown(st.session_state.chat_responses[st.session_state.chat_response_count])
+
+        if st.session_state.chat_response_count < len(st.session_state.chat_responses) - 1:
+            if st.button("Go to Next Response"):
+                if st.session_state.chat_response_count < len(st.session_state.chat_responses) - 1:
+                    st.session_state.chat_response_count += 1
+                    st.markdown(st.session_state.chat_responses[st.session_state.chat_response_count])
 
 # Image Captioning page
 if selected == "Image Captioning":
@@ -122,37 +144,13 @@ if selected == "Ask me anything":
 
     user_prompt = st.text_area(label='', placeholder="Ask me anything...")
 
-    def get_response():
+    if st.button("Get Response"):
         if user_prompt.strip() == "":
             st.error("No question entered. Please ask a question to get a response.")
         else:
             response = gemini_pro_response(user_prompt)
-            st.session_state.responses.append(response)
-            st.session_state.response_count = len(st.session_state.responses) - 1
-            st.session_state.initial_response_received = True
+            st.markdown(response)
 
-    if not st.session_state.initial_response_received:
-        if st.button("Get Response"):
-            get_response()
-    
-    if st.session_state.initial_response_received:
-        st.markdown(st.session_state.responses[st.session_state.response_count])
-
-        if st.session_state.response_count < 2:
-            if st.button("Get Another Response"):
-                get_response()
-
-        if st.session_state.response_count > 0:
-            if st.button("Go to Previous Response"):
-                if st.session_state.response_count > 0:
-                    st.session_state.response_count -= 1
-                    st.markdown(st.session_state.responses[st.session_state.response_count])
-
-        if st.session_state.response_count < len(st.session_state.responses) - 1:
-            if st.button("Go to Next Response"):
-                if st.session_state.response_count < len(st.session_state.responses) - 1:
-                    st.session_state.response_count += 1
-                    st.markdown(st.session_state.responses[st.session_state.response_count])
 
 
 
