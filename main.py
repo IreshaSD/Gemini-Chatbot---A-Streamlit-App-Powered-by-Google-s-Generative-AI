@@ -90,7 +90,7 @@ if selected == 'ChatBot':
                 st.session_state.chat_response_count = len(st.session_state.chat_responses) - 1
 
         if st.session_state.chat_response_count == 1:
-            if st.button("Get One More Response"):
+            if st.button("Explore Another Option"):
                 gemini_response = st.session_state.chat_session.send_message(st.session_state.chat_user_prompt)
                 st.session_state.chat_responses.append(gemini_response.text)
                 st.session_state.chat_response_count = len(st.session_state.chat_responses) - 1
