@@ -100,13 +100,69 @@ if selected == 'ChatBot':
 
         if st.session_state.current_response_index > 0:
             if st.button("Previous Response"):
-                if st.session_state.current_response_index > 0:
-                    st.session_state.current_response_index -= 1
-                    st.markdown(current_question["responses"][st.session_state.current_response_index])
+                st.session_state.current_response_index -= 1
+                st.markdown(current_question["responses"][st.session_state.current_response_index])
 
         if st.session_state.current_response_index < len(current_question["responses"]) - 1:
             if st.button("Next Response"):
-                if st.sess
+                st.session_state.current_response_index += 1
+                st.markdown(current_question["responses"][st.session_state.current_response_index])
+
+# Image Captioning page
+if selected == "Image Captioning":
+    st.title("📷 Snap Narrate")
+
+    uploaded_image = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
+
+    if st.button("Generate Caption"):
+        if uploaded_image is not None:
+            image = Image.open(uploaded_image)
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                resized_image = image.resize((800, 500))
+                st.image(resized_image)
+
+            with col2:
+                st.subheader("Short Description")
+                short_prompt = "Write a short caption for this image"
+                short_caption = gemini_pro_vision_response(short_prompt, image)
+                st.info(short_caption)
+
+            with col3:
+                st.subheader("Detailed Description")
+                long_prompt = "Write a detailed description for this image"
+                long_caption = gemini_pro_vision_response(long_prompt, image)
+                st.info(long_caption)
+        else:
+            st.error("No image detected. Please upload an image for captioning and try again.")
+
+# Text embedding page
+if selected == "Embed text":
+    st.title("🔡 Embed Text")
+
+    user_prompt = st.text_area(label='', placeholder="Enter the text to get embeddings")
+
+    if st.button("Get Response"):
+        if user_prompt.strip() == "":
+            st.error("No text entered. Please input text to get embeddings.")
+        else:
+            response = embeddings_model_response(user_prompt)
+            st.markdown(response)
+
+# Question answering page
+if selected == "Ask me anything":
+    st.title("❓ Ask me a question")
+
+    user_prompt = st.text_area(label='', placeholder="Ask me anything...")
+
+    if st.button("Get Response"):
+        if user_prompt.strip() == "":
+            st.error("No question entered. Please ask a question to get a response.")
+        else:
+            response = gemini_pro_response(user_prompt)
+            st.markdown(response)
+
 
 
 
