@@ -79,16 +79,16 @@ if selected == "Image Captioning":
                 resized_image = image.resize((800, 500))
                 st.image(resized_image)
 
-            # Short description
-            short_prompt = "Write a short caption for this image"  # change this prompt as per your requirement
-            short_caption = gemini_pro_vision_response(short_prompt, image)
             with col2:
+                st.subheader("Short Description")
+                short_prompt = "Write a short caption for this image"
+                short_caption = gemini_pro_vision_response(short_prompt, image)
                 st.info(short_caption)
 
-            # Longer description
-            long_prompt = "Write a detailed description for this image"  # change this prompt as per your requirement
-            long_caption = gemini_pro_vision_response(long_prompt, image)
             with col3:
+                st.subheader("Detailed Description")
+                long_prompt = "Write a detailed description for this image"
+                long_caption = gemini_pro_vision_response(long_prompt, image)
                 st.info(long_caption)
         else:
             st.error("No image detected. Please upload an image for captioning and try again.")
@@ -120,4 +120,3 @@ if selected == "Ask me anything":
         else:
             response = gemini_pro_response(user_prompt)
             st.markdown(response)
-
