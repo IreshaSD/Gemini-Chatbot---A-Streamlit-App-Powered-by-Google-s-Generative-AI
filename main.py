@@ -73,19 +73,23 @@ if selected == "Image Captioning":
     if st.button("Generate Caption"):
         if uploaded_image is not None:
             image = Image.open(uploaded_image)
-            col1, col2 = st.columns(2)
+            col1, col2, col3 = st.columns(3)
 
             with col1:
                 resized_image = image.resize((800, 500))
                 st.image(resized_image)
 
-            default_prompt = "Write a short caption for this image"  # change this prompt as per your requirement
-
-            # Get the caption of the image from the gemini-pro-vision model
-            caption = gemini_pro_vision_response(default_prompt, image)
-
+            # Short description
+            short_prompt = "Write a short caption for this image"  # change this prompt as per your requirement
+            short_caption = gemini_pro_vision_response(short_prompt, image)
             with col2:
-                st.info(caption)
+                st.info(short_caption)
+
+            # Longer description
+            long_prompt = "Write a detailed description for this image"  # change this prompt as per your requirement
+            long_caption = gemini_pro_vision_response(long_prompt, image)
+            with col3:
+                st.info(long_caption)
         else:
             st.error("No image detected. Please upload an image for captioning and try again.")
 
@@ -116,3 +120,4 @@ if selected == "Ask me anything":
         else:
             response = gemini_pro_response(user_prompt)
             st.markdown(response)
+
