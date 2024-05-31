@@ -1,17 +1,16 @@
 import os
-
 from PIL import Image
 import streamlit as st
 from streamlit_option_menu import option_menu
-
 from gemini_utility import (load_gemini_pro_model,
                             gemini_pro_response,
                             gemini_pro_vision_response,
                             embeddings_model_response)
 
-
+# Get the working directory
 working_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Setting up the page configuration
 st.set_page_config(
     page_title="Gemini AI",
     page_icon="🧠",
@@ -28,7 +27,6 @@ with st.sidebar:
                            default_index=0
                            )
 
-
 # Function to translate roles between Gemini-Pro and Streamlit terminology
 def translate_role_for_streamlit(user_role):
     if user_role == "model":
@@ -36,8 +34,7 @@ def translate_role_for_streamlit(user_role):
     else:
         return user_role
 
-
-# chatbot page
+# Chatbot page
 if selected == 'ChatBot':
     model = load_gemini_pro_model()
 
@@ -66,7 +63,6 @@ if selected == 'ChatBot':
         with st.chat_message("assistant"):
             st.markdown(gemini_response.text)
 
-
 # Image Captioning page
 if selected == "Image Captioning":
     # Streamlit page title
@@ -93,29 +89,30 @@ if selected == "Image Captioning":
         else:
             st.error("No image detected. Please upload an image for captioning and try again.")
 
-
-
-# text embedding model
+# Text embedding page
 if selected == "Embed text":
-
     st.title("🔡 Embed Text")
 
-    # text box to enter prompt
+    # Text box to enter prompt
     user_prompt = st.text_area(label='', placeholder="Enter the text to get embeddings")
 
     if st.button("Get Response"):
-        response = embeddings_model_response(user_prompt)
-        st.markdown(response)
+        if user_prompt.strip() == "":
+            st.error("No text entered. Please input text to get embeddings.")
+        else:
+            response = embeddings_model_response(user_prompt)
+            st.markdown(response)
 
-
-# text embedding model
+# Question answering page
 if selected == "Ask me anything":
-
     st.title("❓ Ask me a question")
 
-    # text box to enter prompt
+    # Text box to enter prompt
     user_prompt = st.text_area(label='', placeholder="Ask me anything...")
 
     if st.button("Get Response"):
-        response = gemini_pro_response(user_prompt)
-        st.markdown(response)
+        if user_prompt.strip() == "":
+            st.error("No question entered. Please ask a question to get a response.")
+        else:
+            response = gemini_pro_response(user_prompt)
+            st.markdown(response)
