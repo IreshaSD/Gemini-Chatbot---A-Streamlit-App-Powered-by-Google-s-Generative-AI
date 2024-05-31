@@ -48,11 +48,15 @@ if "chat_responses" not in st.session_state:
 if "chat_initial_response_received" not in st.session_state:
     st.session_state.chat_initial_response_received = False
 
+if "chat_user_prompt" not in st.session_state:
+    st.session_state.chat_user_prompt = ""
+
 # Function to reset the response count for ChatBot
 def reset_chat_response_count():
     st.session_state.chat_response_count = 0
     st.session_state.chat_responses = []
     st.session_state.chat_initial_response_received = False
+    st.session_state.chat_user_prompt = ""
 
 # Chatbot page
 if selected == 'ChatBot':
@@ -69,6 +73,7 @@ if selected == 'ChatBot':
 
     user_prompt = st.chat_input("Ask Gemini-Pro...")
     if user_prompt:
+        st.session_state.chat_user_prompt = user_prompt
         st.chat_message("user").markdown(user_prompt)
         gemini_response = st.session_state.chat_session.send_message(user_prompt)
         st.session_state.chat_responses.append(gemini_response.text)
@@ -80,7 +85,7 @@ if selected == 'ChatBot':
 
         if st.session_state.chat_response_count < 2:
             if st.button("Get Another Response"):
-                gemini_response = st.session_state.chat_session.send_message(user_prompt)
+                gemini_response = st.session_state.chat_session.send_message(st.session_state.chat_user_prompt)
                 st.session_state.chat_responses.append(gemini_response.text)
                 st.session_state.chat_response_count = len(st.session_state.chat_responses) - 1
 
@@ -144,12 +149,8 @@ if selected == "Ask me anything":
 
     user_prompt = st.text_area(label='', placeholder="Ask me anything...")
 
-    if st.button("Get Response"):
-        if user_prompt.strip() == "":
-            st.error("No question entered. Please ask a question to get a response.")
-        else:
-            response = gemini_pro_response(user_prompt)
-            st.markdown(response)
+    if st.butt
+
 
 
 
