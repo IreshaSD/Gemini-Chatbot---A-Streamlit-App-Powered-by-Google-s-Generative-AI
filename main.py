@@ -114,17 +114,25 @@ if selected == "Ask me anything":
 
     user_prompt = st.text_area(label='', placeholder="Ask me anything...")
 
-    if st.button("Get Response"):
-        if user_prompt.strip() == "":
-            st.error("No question entered. Please ask a question to get a response.")
-        else:
-            response = gemini_pro_response(user_prompt)
-            st.markdown(response)
-            st.session_state.response_count += 1
+    if st.session_state.response_count == 0:
+        if st.button("Get Response"):
+            if user_prompt.strip() == "":
+                st.error("No question entered. Please ask a question to get a response.")
+            else:
+                response = gemini_pro_response(user_prompt)
+                st.markdown(response)
+                st.session_state.response_count += 1
 
-    if st.session_state.response_count > 0:
+    elif st.session_state.response_count == 1:
         if st.button("Get Another Response"):
             response = gemini_pro_response(user_prompt)
             st.markdown(response)
             st.session_state.response_count += 1
+
+    elif st.session_state.response_count == 2:
+        if st.button("Get Final Response"):
+            response = gemini_pro_response(user_prompt)
+            st.markdown(response)
+            st.session_state.response_count += 1
+
 
