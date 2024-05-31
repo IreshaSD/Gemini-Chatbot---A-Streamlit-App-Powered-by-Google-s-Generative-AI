@@ -90,19 +90,19 @@ if selected == 'ChatBot':
                 st.session_state.chat_response_count = len(st.session_state.chat_responses) - 1
 
         if st.session_state.chat_response_count == 1:
-            if st.button("Explore Another Option"):
+            if st.button("Get One More Response"):
                 gemini_response = st.session_state.chat_session.send_message(st.session_state.chat_user_prompt)
                 st.session_state.chat_responses.append(gemini_response.text)
                 st.session_state.chat_response_count = len(st.session_state.chat_responses) - 1
 
         if st.session_state.chat_response_count > 0:
-            if st.button("Go to Previous Response"):
+            if st.button("Previous Response"):
                 if st.session_state.chat_response_count > 0:
                     st.session_state.chat_response_count -= 1
                     st.markdown(st.session_state.chat_responses[st.session_state.chat_response_count])
 
         if st.session_state.chat_response_count < len(st.session_state.chat_responses) - 1:
-            if st.button("Go to Next Response"):
+            if st.button("Next Response"):
                 if st.session_state.chat_response_count < len(st.session_state.chat_responses) - 1:
                     st.session_state.chat_response_count += 1
                     st.markdown(st.session_state.chat_responses[st.session_state.chat_response_count])
@@ -147,20 +147,7 @@ if selected == "Embed text":
             st.error("No text entered. Please input text to get embeddings.")
         else:
             response = embeddings_model_response(user_prompt)
-            st.markdown(response)
-
-# Question answering page
-if selected == "Ask me anything":
-    st.title("❓ Ask me a question")
-
-    user_prompt = st.text_area(label='', placeholder="Ask me anything...")
-
-    if st.button("Get Response"):
-        if user_prompt.strip() == "":
-            st.error("No question entered. Please ask a question to get a response.")
-        else:
-            response = gemini_pro_response(user_prompt)
-            st.markdown(response)
+            st.mark
 
 
 
