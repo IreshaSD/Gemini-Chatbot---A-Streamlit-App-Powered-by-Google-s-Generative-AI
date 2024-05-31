@@ -83,13 +83,13 @@ if selected == 'ChatBot':
     if st.session_state.chat_initial_response_received:
         st.markdown(st.session_state.chat_responses[st.session_state.chat_response_count])
 
-        if st.session_state.chat_response_count == 0:
+        if st.session_state.chat_response_count == 0 and len(st.session_state.chat_responses) < 3:
             if st.button("Get Another Response"):
                 gemini_response = st.session_state.chat_session.send_message(st.session_state.chat_user_prompt)
                 st.session_state.chat_responses.append(gemini_response.text)
                 st.session_state.chat_response_count = len(st.session_state.chat_responses) - 1
 
-        if st.session_state.chat_response_count == 1:
+        if st.session_state.chat_response_count == 1 and len(st.session_state.chat_responses) < 3:
             if st.button("Get One More Response"):
                 gemini_response = st.session_state.chat_session.send_message(st.session_state.chat_user_prompt)
                 st.session_state.chat_responses.append(gemini_response.text)
@@ -147,7 +147,21 @@ if selected == "Embed text":
             st.error("No text entered. Please input text to get embeddings.")
         else:
             response = embeddings_model_response(user_prompt)
-            st.mark
+            st.markdown(response)
+
+# Question answering page
+if selected == "Ask me anything":
+    st.title("❓ Ask me a question")
+
+    user_prompt = st.text_area(label='', placeholder="Ask me anything...")
+
+    if st.button("Get Response"):
+        if user_prompt.strip() == "":
+            st.error("No question entered. Please ask a question to get a response.")
+        else:
+            response = gemini_pro_response(user_prompt)
+            st.markdown(response)
+
 
 
 
