@@ -42,9 +42,13 @@ if "chat_session" not in st.session_state:
 if "response_count" not in st.session_state:
     st.session_state.response_count = 0
 
+if "responses" not in st.session_state:
+    st.session_state.responses = []
+
 # Function to reset the response count
 def reset_response_count():
     st.session_state.response_count = 0
+    st.session_state.responses = []
 
 # Chatbot page
 if selected == 'ChatBot':
@@ -114,25 +118,31 @@ if selected == "Ask me anything":
 
     user_prompt = st.text_area(label='', placeholder="Ask me anything...")
 
+    def get_response():
+        if user_prompt.strip() == "":
+            st.error("No question entered. Please ask a question to get a response.")
+        else:
+            response = gemini_pro_response(user_prompt)
+            st.session_state.responses.append(response)
+            st.session_state.response_count += 1
+
     if st.session_state.response_count == 0:
         if st.button("Get Response"):
-            if user_prompt.strip() == "":
-                st.error("No question entered. Please ask a question to get a response.")
-            else:
-                response = gemini_pro_response(user_prompt)
-                st.markdown(response)
+            get_response()
+    
+    if 0 < st.session_state.response_count <= 3:
+        st.markdown(st.session_state.responses[-1])
+        if st.session_state.response_count < 3:
+            if st.button("Get Another Response"):
+                get_response()
+        if st.session_state.response_count > 1:
+            if st.button("Go to Previous Response"):
+                st.session_state.response_count -= 1
+                st.markdown(st.session_state.responses[st.session_state.response_count - 1])
+        if st.session_state.response_count < 3 and st.session_state.response_count > 1:
+            if st.button("Go to Next Response"):
                 st.session_state.response_count += 1
+                st.markdown(st.session_state.responses[st.session_state.response_count - 1])
 
-    elif st.session_state.response_count == 1:
-        if st.button("Get Another Response"):
-            response = gemini_pro_response(user_prompt)
-            st.markdown(response)
-            st.session_state.response_count += 1
-
-    elif st.session_state.response_count == 2:
-        if st.button("Get Final Response"):
-            response = gemini_pro_response(user_prompt)
-            st.markdown(response)
-            st.session_state.response_count += 1
 
 
