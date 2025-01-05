@@ -21,9 +21,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Access the API key from environment variables
-# GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
-GOOGLE_API_KEY = os.environ['OPENAI_API_KEY']
+# GOOGLE_API_KEY = os.environ['OPENAI_API_KEY']
 
 # Configure google.generativeai with API key
 genai.configure(api_key=GOOGLE_API_KEY)
